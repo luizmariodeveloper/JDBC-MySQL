@@ -14,8 +14,6 @@ public interface GernericDAO <T> {
 	
 	List<T> listarTodos ()throws PersitenciaExecption;
 	
-	List<T> buscarPor (Integer id)throws PersitenciaExecption;
-	
     List<T> buscarPor (String nome)throws PersitenciaExecption;
 	
 }

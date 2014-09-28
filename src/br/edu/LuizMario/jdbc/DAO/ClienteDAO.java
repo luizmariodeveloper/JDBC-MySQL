@@ -12,9 +12,9 @@ import br.edu.LuizMario.jdbc.DTO.ClienteDTO;
 import br.edu.LuizMario.jdbc.Excption.PersitenciaExecption;
 
 public class ClienteDAO implements GernericDAO<ClienteDTO> {
+	
+	private ClienteDTO clienteDTO;
 
-	
-	
 	public void inserir(ClienteDTO clienteDTO) throws PersitenciaExecption {
 		try {
 			Connection connection = ConexaoUtil.getInstance().getConnection();
@@ -68,13 +68,10 @@ public class ClienteDAO implements GernericDAO<ClienteDTO> {
 		
 		try {
 			Connection connection = ConexaoUtil.getInstance().getConnection();			
-			String SQL = " DELETE FROM cliente "+
-						 "  WHERE IDCliente = ? ";
-			
+			String SQL = " DELETE FROM CLIENTE "+
+						 " WHERE IDCliente = ? ";
 			PreparedStatement statment = connection.prepareStatement(SQL);
-			
 			statment.setInt(1, idPessoa);
-			
 			statment.execute();
 			connection.close();
 		} catch (Exception e) {
@@ -88,25 +85,19 @@ public class ClienteDAO implements GernericDAO<ClienteDTO> {
 	
 		try {
 			Connection connection = ConexaoUtil.getInstance().getConnection();
-			
 			List<ClienteDTO> aClienteDTO = new ArrayList<ClienteDTO>();
-			
 			String sql;
 			sql = "SELECT * FROM CLIENTE";
 			PreparedStatement statement = connection.prepareStatement(sql);
 			ResultSet resultSet = statement.executeQuery();
 			
-					
 			while (resultSet.next()) { 
-				
 				ClienteDTO clienteDTO = new ClienteDTO();
-				
 				clienteDTO.setIDCliente(resultSet.getInt("IDCliente"));
 				clienteDTO.setNomeCliente(resultSet.getString("nomeCliente"));
 				clienteDTO.setEndereco(resultSet.getString("endereco"));
 				clienteDTO.setObservacao(resultSet.getString("observacao"));
 				clienteDTO.setCPF(resultSet.getString("CPF"));
-				
 				aClienteDTO.add(clienteDTO);}
 			connection.close();
 			return aClienteDTO;
@@ -115,9 +106,6 @@ public class ClienteDAO implements GernericDAO<ClienteDTO> {
 			throw new PersitenciaExecption(e.getMessage(), e);}
 	}
 
-	public List<ClienteDTO> buscarPor(Integer id) throws PersitenciaExecption{
-		return null;
-	}
 	
 	
 	public List<ClienteDTO> buscarPor(String nome) throws PersitenciaExecption{
@@ -164,5 +152,37 @@ public class ClienteDAO implements GernericDAO<ClienteDTO> {
 			statement.setString(1,nome);
 			resultSet = statement.executeQuery();}
 		return resultSet;
+	}
+
+	public ClienteDTO buscarPor(Integer id) throws PersitenciaExecption {
+		clienteDTO = null;
+		try {
+			Connection connection = ConexaoUtil.getInstance().getConnection();
+			
+			String SQL = " SELECT * FROM CLIENTE "
+					   + " WHERE IDCliente = ? ";
+			
+			PreparedStatement statment = connection.prepareStatement(SQL);
+			
+			statment.setInt(1, id);
+			
+			ResultSet resultSet = statment.executeQuery();
+		
+			if (resultSet.next()) {
+				clienteDTO = new ClienteDTO();
+				clienteDTO.setIDCliente  (resultSet.getInt    ("IDCliente") );
+				clienteDTO.setNomeCliente(resultSet.getString("nomeCliente"));
+				clienteDTO.setEndereco   (resultSet.getString("endereco")   );
+				clienteDTO.setObservacao (resultSet.getString("observacao") );
+				clienteDTO.setCPF        (resultSet.getString("CPF")        );
+				connection.close();}
+			
+		} catch (Exception e) {
+			e.getMessage();
+			throw new PersitenciaExecption(e.getMessage(), e); 
+		}
+		
+		return clienteDTO;
+		
 	}
 }

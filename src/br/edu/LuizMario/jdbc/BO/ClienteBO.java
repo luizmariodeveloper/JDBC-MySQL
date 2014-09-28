@@ -10,7 +10,6 @@ import br.edu.LuizMario.jdbc.Excption.ValidacaoException;
 
 public class ClienteBO {
 
-	
 	public void Inserir (ClienteDTO clienteDTO) throws ClienteException{
 		ClienteDAO clienteDAO = new ClienteDAO();
 		String msg = null;
@@ -26,14 +25,14 @@ public class ClienteBO {
 			throw new ClienteException(e.getMessage(), e);}	
 	}
 	
-	public String[][] listagem() throws PersitenciaExecption {
+	public String[][] listagem(List<Integer> idPessoas) throws PersitenciaExecption {
 		String[][] listaRetorno = null;
 		try {
 			ClienteDAO clienteDAO = new ClienteDAO();
 			List<ClienteDTO> lista = clienteDAO.listarTodos();
-			listaRetorno = new String[lista.size()][5];
+			listaRetorno = new String[lista.size()][7];
 			
-			preencherCliente(listaRetorno, lista);
+			preencherCliente(listaRetorno, lista, idPessoas);
 		
 		} catch (PersitenciaExecption e) {
 			throw new PersitenciaExecption(e.getMessage(), e);}
@@ -90,28 +89,64 @@ public class ClienteBO {
 		return retorno;
 	}
 	
-	
 	public String[][] buscarPor(String nome) throws PersitenciaExecption {
-		String[][] listaRetorno = null;
+		String[][] listaRetorno = null; 
 		try {
 			ClienteDAO clienteDAO = new ClienteDAO();
 			List<ClienteDTO> lista = clienteDAO.buscarPor(nome);
 			listaRetorno = new String[lista.size()][5];
-			preencherCliente(listaRetorno, lista);
+			preencherCliente(listaRetorno, lista, null);
 		
 		} catch (PersitenciaExecption e) {
 			throw new PersitenciaExecption(e.getMessage(), e);}
 		return listaRetorno;
 	}
 
-	private void preencherCliente(String[][] listaRetorno, List<ClienteDTO> lista) {
+	private void preencherCliente(String[][] listaRetorno, List<ClienteDTO> lista, List<Integer> idPessoas) {
 		
 		for (int i= 0; i < lista.size() ; i++) {
 			ClienteDTO clienteDTO = lista.get(i);
 			listaRetorno[i][0] = clienteDTO.getIDCliente().toString();
+			idPessoas.add(clienteDTO.getIDCliente());
 			listaRetorno[i][1] = clienteDTO.getNomeCliente();
 			listaRetorno[i][2] = clienteDTO.getCPF();
 			listaRetorno[i][3] = clienteDTO.getEndereco();
-			listaRetorno[i][4] = clienteDTO.getObservacao();}
+			listaRetorno[i][4] = clienteDTO.getObservacao();
+			listaRetorno[i][5] = "Editar";
+			listaRetorno[i][6] = "Deletar";
+			}
+	}
+	
+	public void removerCliente(int idPessoa) throws PersitenciaExecption{
+		try {
+			ClienteDAO clienteDAO = new ClienteDAO();
+			clienteDAO.delete(idPessoa);
+		}catch (PersitenciaExecption e ){
+			e.printStackTrace();
+		}
+	}
+	
+	public ClienteDTO buscarEdicao (int idCliente) throws ClienteException{
+		ClienteDTO clienteDTO = null;
+		
+		try {	
+			ClienteDAO clienteDAO = new ClienteDAO ();
+			clienteDTO = clienteDAO.buscarPor(idCliente);
+		} catch (PersitenciaExecption e) {
+			e.printStackTrace();
+			throw new ClienteException(e.getMessage(), e);
+		}
+	
+		return clienteDTO;
+	}
+	
+	public void alterarCliente (ClienteDTO clienteDTO, int idPessoa) throws ClienteException{
+		try {
+			ClienteDAO clienteDAO = new ClienteDAO();
+			clienteDAO.atualizar(clienteDTO, idPessoa);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new ClienteException(e.getMessage(), e);
+		}
 	}
 }	

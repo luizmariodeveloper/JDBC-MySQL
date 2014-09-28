@@ -5,8 +5,11 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.Action;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
+import javax.swing.AbstractAction;
+import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
@@ -19,14 +22,20 @@ import br.edu.LuizMario.jdbc.Excption.ClienteException;
 import br.edu.LuizMario.jdbc.Excption.PersitenciaExecption;
 import br.edu.LuizMario.jdbc.Excption.ValidacaoException;
 import br.edu.LuizMario.jdbc.Util.MessageUtil;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.border.TitledBorder;
+import javax.swing.JInternalFrame;
 
+import java.awt.Color;
 
 
 public class jFrmCadastro extends JFrame {
@@ -41,8 +50,22 @@ public class jFrmCadastro extends JFrame {
 	private JTextField txtEndereco;
 	private JTextField txtObservacao;
 	private JTable table;
+	private JTable tableListagem;
 	private JTextField txtNomePesquisa;
 	private JTable tablePesquisarPor_2;
+	private List<Integer> idPessoas = new ArrayList<Integer>();
+	private JTextField txtEdicaoNome;
+	private JTextField txtEdicaoCPF;
+	private JTextField txtEdicaoEndereco;
+	private JTextField txtEdicaoObservacao;
+	private JTextField txtEdicaoId;
+	private void trazerDoBanco (ClienteDTO clienteDTO){
+		this.txtEdicaoNome.setText(clienteDTO.getNomeCliente());
+		this.txtEdicaoCPF.setText(clienteDTO.getCPF());
+		this.txtEdicaoEndereco.setText(clienteDTO.getEndereco());
+		this.txtEdicaoObservacao.setText(clienteDTO.getObservacao());
+		this.txtEdicaoId.setText(clienteDTO.getIDCliente().toString());
+	}
 
 	/**
 	 * Launch the application.
@@ -68,7 +91,7 @@ public class jFrmCadastro extends JFrame {
 	public jFrmCadastro() throws PersitenciaExecption {
 		setTitle("Sisema de Cadastro Cliente");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 478, 325);
+		setBounds(100, 100, 752, 428);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -172,7 +195,7 @@ public class jFrmCadastro extends JFrame {
 							.addComponent(label, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
 							.addPreferredGap(ComponentPlacement.RELATED)
 							.addComponent(txtCpf, GroupLayout.PREFERRED_SIZE, 136, GroupLayout.PREFERRED_SIZE)))
-					.addContainerGap(24, Short.MAX_VALUE))
+					.addContainerGap(75, Short.MAX_VALUE))
 		);
 		gl_panelCadastro.setVerticalGroup(
 			gl_panelCadastro.createParallelGroup(Alignment.LEADING)
@@ -197,23 +220,19 @@ public class jFrmCadastro extends JFrame {
 					.addGroup(gl_panelCadastro.createParallelGroup(Alignment.BASELINE)
 						.addComponent(btnNewButton)
 						.addComponent(btnLimpar))
-					.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+					.addContainerGap(23, Short.MAX_VALUE))
 		);
 		panelCadastro.setLayout(gl_panelCadastro);
 		GroupLayout gl_contentPane = new GroupLayout(contentPane);
 		gl_contentPane.setHorizontalGroup(
 			gl_contentPane.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_contentPane.createSequentialGroup()
-					.addGap(6)
-					.addComponent(tabbedPane, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-					.addContainerGap(55, Short.MAX_VALUE))
+					.addComponent(tabbedPane, GroupLayout.DEFAULT_SIZE, 716, Short.MAX_VALUE)
+					.addContainerGap())
 		);
 		gl_contentPane.setVerticalGroup(
 			gl_contentPane.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_contentPane.createSequentialGroup()
-					.addGap(5)
-					.addComponent(tabbedPane, GroupLayout.PREFERRED_SIZE, 265, GroupLayout.PREFERRED_SIZE)
-					.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+				.addComponent(tabbedPane, GroupLayout.DEFAULT_SIZE, 352, Short.MAX_VALUE)
 		);
 		
 		JPanel panelListagem = new JPanel();
@@ -222,38 +241,218 @@ public class jFrmCadastro extends JFrame {
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
 		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		
+		final JInternalFrame internalFrameEdicao = new JInternalFrame("New JInternalFrame");
+		internalFrameEdicao.setVisible(false);
 		GroupLayout gl_panelListagem = new GroupLayout(panelListagem);
 		gl_panelListagem.setHorizontalGroup(
 			gl_panelListagem.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_panelListagem.createSequentialGroup()
+				.addGroup(Alignment.TRAILING, gl_panelListagem.createSequentialGroup()
 					.addContainerGap()
-					.addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 409, Short.MAX_VALUE)
+					.addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 432, Short.MAX_VALUE)
+					.addGap(18)
+					.addComponent(internalFrameEdicao, GroupLayout.PREFERRED_SIZE, 241, GroupLayout.PREFERRED_SIZE)
 					.addContainerGap())
 		);
 		gl_panelListagem.setVerticalGroup(
 			gl_panelListagem.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_panelListagem.createSequentialGroup()
+				.addGroup(Alignment.TRAILING, gl_panelListagem.createSequentialGroup()
 					.addContainerGap()
-					.addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 215, Short.MAX_VALUE)
+					.addGroup(gl_panelListagem.createParallelGroup(Alignment.TRAILING)
+						.addComponent(scrollPane, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 215, Short.MAX_VALUE)
+						.addComponent(internalFrameEdicao, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 215, Short.MAX_VALUE))
 					.addContainerGap())
 		);
 		
-		table = new JTable();
-		table.setColumnSelectionAllowed(true);
+		
+		JLabel lblEdicaoNome = new JLabel("Nome:");
+		
+		txtEdicaoNome = new JTextField();
+		txtEdicaoNome.setColumns(10);
+		
+		JLabel lblEdicaoCPF = new JLabel("CPF:");
+		
+		txtEdicaoCPF = new JTextField();
+		txtEdicaoCPF.setColumns(10);
+		
+		JLabel lblEdicaoEndereco = new JLabel("Endere\u00E7o:");
+		
+		txtEdicaoEndereco = new JTextField();
+		txtEdicaoEndereco.setColumns(10);
+		
+		JLabel lblEdicaoObservacao = new JLabel("Observa\u00E7\u00F5es:");
+		
+		txtEdicaoObservacao = new JTextField();
+		txtEdicaoObservacao.setColumns(10);
+		
+		JButton btnEdicaoSalvar = new JButton("Salvar");
+		btnEdicaoSalvar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				ClienteBO clienteBO = new ClienteBO();
+				ClienteDTO clienteDTO = new ClienteDTO();
+				try {
+					clienteDTO.setNomeCliente(txtEdicaoNome.getText());
+					clienteDTO.setCPF(txtEdicaoCPF.getText());
+					clienteDTO.setEndereco(txtEdicaoEndereco.getText());
+					clienteDTO.setObservacao(txtEdicaoObservacao.getText());
+					clienteDTO.setIDCliente(Integer.parseInt(txtEdicaoId.getText()));
+					
+					clienteBO.alterarCliente(clienteDTO,Integer.parseInt(txtEdicaoId.getText()) );
+					MessageUtil.addMesg(jFrmCadastro.this, "Cliente, Atualizado com sucesso !!!");
+					
+					jFrmCadastro.this.dispose();
+					main(null);
+					
+					internalFrameEdicao.setVisible(false);
+					
+				}  catch (ClienteException e) {
+					e.printStackTrace();
+					MessageUtil.addMesg(jFrmCadastro.this, e.getMessage() );
+				}
+			}
+		});
+		
+		
+		
+		JButton btnEdicaoCancelar = new JButton("Cancelar");
+		btnEdicaoCancelar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				txtEdicaoCPF.setText("");
+				txtEdicaoNome.setText("");
+				txtEdicaoObservacao.setText("");
+				txtEdicaoEndereco.setText("");
+				internalFrameEdicao.setVisible(false);
+			}
+		});
+		
+		JLabel lbEdicaoId = new JLabel("Id");
+		lbEdicaoId.setForeground(Color.BLACK);
+		
+		txtEdicaoId = new JTextField();
+		txtEdicaoId.setEditable(false);
+		txtEdicaoId.setForeground(Color.RED);
+		txtEdicaoId.setColumns(10);
+		GroupLayout groupLayout = new GroupLayout(internalFrameEdicao.getContentPane());
+		groupLayout.setHorizontalGroup(
+			groupLayout.createParallelGroup(Alignment.LEADING)
+				.addGroup(groupLayout.createSequentialGroup()
+					.addContainerGap(11, Short.MAX_VALUE)
+					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+						.addGroup(groupLayout.createSequentialGroup()
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+								.addComponent(txtEdicaoObservacao, 204, 204, 204)
+								.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
+									.addComponent(lblEdicaoCPF)
+									.addComponent(txtEdicaoCPF, GroupLayout.PREFERRED_SIZE, 119, GroupLayout.PREFERRED_SIZE)
+									.addComponent(lblEdicaoEndereco)
+									.addComponent(txtEdicaoEndereco)
+									.addComponent(lblEdicaoObservacao))
+								.addGroup(groupLayout.createSequentialGroup()
+									.addComponent(btnEdicaoSalvar)
+									.addPreferredGap(ComponentPlacement.RELATED)
+									.addComponent(btnEdicaoCancelar))))
+						.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
+							.addComponent(txtEdicaoNome, GroupLayout.DEFAULT_SIZE, 204, Short.MAX_VALUE)
+							.addComponent(lblEdicaoNome)))
+					.addContainerGap())
+				.addGroup(groupLayout.createSequentialGroup()
+					.addContainerGap()
+					.addComponent(lbEdicaoId)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(txtEdicaoId, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE)
+					.addContainerGap(170, Short.MAX_VALUE))
+		);
+		groupLayout.setVerticalGroup(
+			groupLayout.createParallelGroup(Alignment.TRAILING)
+				.addGroup(groupLayout.createSequentialGroup()
+					.addContainerGap()
+					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+						.addComponent(lbEdicaoId)
+						.addComponent(txtEdicaoId, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+					.addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+					.addComponent(lblEdicaoNome)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(txtEdicaoNome, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+					.addGap(11)
+					.addComponent(lblEdicaoCPF)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(txtEdicaoCPF, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+					.addPreferredGap(ComponentPlacement.UNRELATED)
+					.addComponent(lblEdicaoEndereco)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(txtEdicaoEndereco, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(lblEdicaoObservacao)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(txtEdicaoObservacao, GroupLayout.PREFERRED_SIZE, 43, GroupLayout.PREFERRED_SIZE)
+					.addPreferredGap(ComponentPlacement.UNRELATED)
+					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+						.addComponent(btnEdicaoSalvar)
+						.addComponent(btnEdicaoCancelar))
+					.addGap(20))
+		);
+		internalFrameEdicao.getContentPane().setLayout(groupLayout);
+		
+		tableListagem = new JTable();
+		tableListagem.setColumnSelectionAllowed(true);
 		
 		ClienteBO clienteBO = new ClienteBO();
 		
 		try {
-			String[][] lista = clienteBO.listagem();
-			table.setModel(new DefaultTableModel(
+			String[][] lista = clienteBO.listagem(idPessoas);
+			tableListagem.setModel(new DefaultTableModel(
 			lista,
-			new String[] {"Id", "Nome", "CPF", "Endere\u00E7o", "Observa\u00E7\u00F5es","Teste","Teste"}
+			new String[] {"Id", "Nome", "CPF", "Endere\u00E7o", "Observa\u00E7\u00F5es","",""}
 		));
+			
+			Action actionEditar = new AbstractAction() {
+				private static final long serialVersionUID = 1L;
+				public void actionPerformed(ActionEvent acEvent) {
+				final ClienteBO clienteBO = new ClienteBO();
+					try {
+						int linha = Integer.parseInt(acEvent.getActionCommand());
+						ClienteDTO clienteDTO = clienteBO.buscarEdicao(idPessoas.get(linha));
+						trazerDoBanco(clienteDTO);
+						internalFrameEdicao.setVisible(true);
+					} catch (Exception e) {
+						e.printStackTrace();
+						MessageUtil.addMesg(jFrmCadastro.this, e.getMessage());
+					}
+					
+				}
+			};
+			
+			
+			
+			Action actionDeletar = new AbstractAction() {
+				private static final long serialVersionUID = 1L;
+				public void actionPerformed(ActionEvent acEvent) {
+					int resp = JOptionPane.showConfirmDialog(jFrmCadastro.this, "Deseja realmente excluir ? ");
+					final ClienteBO clienteBO = new ClienteBO();
+					if (resp == 0){
+						try {
+							JTable table =(JTable) acEvent.getSource();
+							int linha = Integer.parseInt(acEvent.getActionCommand());
+							((DefaultTableModel) table.getModel()).removeRow(linha);
+							clienteBO.removerCliente(idPessoas.get(linha));
+							idPessoas.remove(linha);
+							JOptionPane.showMessageDialog(jFrmCadastro.this, "Cleinte deletado com sucesso !!!");
+						} catch (PersitenciaExecption e) {
+							e.printStackTrace();
+							MessageUtil.addMesg(jFrmCadastro.this, e.getMessage());
+						}
+					}
+				}
+			};
+			
+			ButtonColumn buttonColumnEditar  = new ButtonColumn(tableListagem, actionEditar, 5);
+			ButtonColumn buttonColumnDeletar = new ButtonColumn(tableListagem, actionDeletar, 6);
 		} catch (PersitenciaExecption e) {
 			e.printStackTrace();
 		}
 		
-		scrollPane.setViewportView(table);
+		scrollPane.setViewportView(tableListagem);
 		panelListagem.setLayout(gl_panelListagem);
 		
 		JPanel panelPesquisar = new JPanel();
@@ -348,5 +547,8 @@ public class jFrmCadastro extends JFrame {
 		panel.setLayout(gl_panel);
 		panelPesquisar.setLayout(gl_panelPesquisar);
 		contentPane.setLayout(gl_contentPane);
+		
 	}
+
 }
+
